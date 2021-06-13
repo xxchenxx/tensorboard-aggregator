@@ -42,12 +42,9 @@ def extract(dpath, subpath):
             keys[i], [len(steps) for steps in all_steps])
     '''
     steps_per_key = [all_steps[0] for all_steps in all_steps_per_key]
-
-    for all_scalar_events in all_scalar_events_per_key:
-        for scalar_events in all_scalar_events:
-            print(scalar_events)
+    
     # Get and average wall times per step per key
-    wall_times_per_key = [np.mean([tuple(scalar_event.wall_time for scalar_event in scalar_events) for scalar_events in all_scalar_events], axis=0)
+    wall_times_per_key = [np.mean([[scalar_event.wall_time for scalar_event in scalar_events] for scalar_events in all_scalar_events], axis=0)
                           for all_scalar_events in all_scalar_events_per_key]
 
     # Get values per step per key
