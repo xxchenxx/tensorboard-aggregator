@@ -42,43 +42,18 @@ def extract(dpath, subpath):
             keys[i], [len(steps) for steps in all_steps])
     '''
     steps_per_key = [all_steps[0] for all_steps in all_steps_per_key]
-    
-    # Get and average wall times per step per key
-    wall_times_per_key = [np.mean([[scalar_event.wall_time for scalar_event in scalar_events] for scalar_events in all_scalar_events], axis=0)
-                          for all_scalar_events in all_scalar_events_per_key]
 
     # Get values per step per key
     values_per_key = [[[scalar_event.value for scalar_event in scalar_events] for scalar_events in all_scalar_events]
                       for all_scalar_events in all_scalar_events_per_key]
 
-    all_per_key = dict(zip(keys, zip(steps_per_key, wall_times_per_key, values_per_key)))
+    all_per_key = dict(zip(keys, zip(steps_per_key, values_per_key)))
 
     return all_per_key
 
-
-def aggregate_to_summary(dpath, aggregation_ops, extracts_per_subpath):
-    for op in aggregation_ops:
-        for subpath, all_per_key in extracts_per_subpath.items():
-            path = dpath / FOLDER_NAME / op.__name__ / dpath.name / subpath
-            aggregations_per_key = {key: (steps, wall_times, op(values, axis=0)) for key, (steps, wall_times, values) in all_per_key.items()}
-            write_summary(path, aggregations_per_key)
-
-
-def write_summary(dpath, aggregations_per_key):
-    writer = tf.summary.FileWriter(dpath)
-
-    for key, (steps, wall_times, aggregations) in aggregations_per_key.items():
-        for step, wall_time, aggregation in zip(steps, wall_times, aggregations):
-            summary = tf.Summary(value=[tf.Summary.Value(tag=key, simple_value=aggregation)])
-            scalar_event = Event(wall_time=wall_time, step=step, summary=summary)
-            writer.add_event(scalar_event)
-
-        writer.flush()
-
-
 def aggregate_to_csv(dpath, aggregation_ops, extracts_per_subpath):
     for subpath, all_per_key in extracts_per_subpath.items():
-        for key, (steps, wall_times, values) in all_per_key.items():
+        for key, (steps, values) in all_per_key.items():
             aggregations = [op(values, axis=0) for op in aggregation_ops]
             write_csv(dpath, subpath, key, dpath.name, aggregations, steps, aggregation_ops)
 
