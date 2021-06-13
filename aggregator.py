@@ -81,7 +81,6 @@ def aggregate(dpath, output, subpaths):
     aggregation_ops = [np.mean, np.min, np.max, np.median, np.std, np.var]
 
     ops = {
-        'summary': aggregate_to_summary,
         'csv': aggregate_to_csv
     }
 
