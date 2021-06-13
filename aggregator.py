@@ -50,11 +50,13 @@ def extract(dpath, subpath):
     all_per_key = dict(zip(keys, zip(steps_per_key, values_per_key)))
 
     return all_per_key
-
+from typing import List
 def aggregate_to_csv(dpath, aggregation_ops, extracts_per_subpath):
     for subpath, all_per_key in extracts_per_subpath.items():
         for key, (steps, values) in all_per_key.items():
             print(values)
+            if isinstance(values, List):
+                values = np.array(values)
             aggregations = [op(values, axis=0) for op in aggregation_ops]
             write_csv(dpath, subpath, key, dpath.name, aggregations, steps, aggregation_ops)
 
