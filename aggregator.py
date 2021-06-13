@@ -54,6 +54,7 @@ def extract(dpath, subpath):
 def aggregate_to_csv(dpath, aggregation_ops, extracts_per_subpath):
     for subpath, all_per_key in extracts_per_subpath.items():
         for key, (steps, values) in all_per_key.items():
+            print(values)
             aggregations = [op(values, axis=0) for op in aggregation_ops]
             write_csv(dpath, subpath, key, dpath.name, aggregations, steps, aggregation_ops)
 
