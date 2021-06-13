@@ -36,11 +36,11 @@ def extract(dpath, subpath):
     # Get and validate all steps per key
     all_steps_per_key = [[tuple(scalar_event.step for scalar_event in scalar_events) for scalar_events in all_scalar_events]
                          for all_scalar_events in all_scalar_events_per_key]
-
+    '''
     for i, all_steps in enumerate(all_steps_per_key):
         assert len(set(all_steps)) == 1, "For scalar {} the step numbering or count doesn't match. Step count for all runs: {}".format(
             keys[i], [len(steps) for steps in all_steps])
-
+    '''
     steps_per_key = [all_steps[0] for all_steps in all_steps_per_key]
 
     # Get and average wall times per step per key
